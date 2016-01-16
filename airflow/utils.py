@@ -314,6 +314,10 @@ def validate_key(k, max_length=250):
     elif len(k) > max_length:
         raise AirflowException(
             "The key has to be less than {0} characters".format(max_length))
+    elif not k:
+        raise AirflowException("Identifier cannot be an empty string")
+    elif k[0].isdigit():
+        raise AirflowException("Identifier can't start with numeric character")
     elif not re.match(r'^[A-Za-z0-9_\-\.]+$', k):
         raise AirflowException(
             "The key ({k}) has to be made of alphanumeric characters, dashes, "

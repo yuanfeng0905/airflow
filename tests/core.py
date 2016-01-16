@@ -306,6 +306,13 @@ class CoreTest(unittest.TestCase):
             t.run,
             start_date=DEFAULT_DATE, end_date=DEFAULT_DATE, force=True)
 
+    def test_bad_dagid(self):
+        def get_dag(dag_id):
+            return DAG(dag_id)
+        self.assertRaises(AirflowException, get_dag, '3nonumber')
+        self.assertRaises(AirflowException, get_dag, '$#@')
+        self.assertRaises(AirflowException, get_dag, 'fldsjaflk' * 100)
+
     def test_python_op(self):
         def test_py_op(templates_dict, ds, **kwargs):
             if not templates_dict['ds'] == ds:
