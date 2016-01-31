@@ -619,7 +619,7 @@ class CliTests(unittest.TestCase):
             '-s', DEFAULT_DATE.isoformat()]))
 
     def test_render(self):
-        cli.backfill(self.parser.parse_args([
+        cli.render(self.parser.parse_args([
             'render', 'example_bash_operator',
             'runme_0', DEFAULT_DATE.isoformat()]))
 
