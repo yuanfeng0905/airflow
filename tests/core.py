@@ -618,6 +618,11 @@ class CliTests(unittest.TestCase):
             'backfill', 'example_bash_operator', '-l',
             '-s', DEFAULT_DATE.isoformat()]))
 
+    def test_render(self):
+        cli.backfill(self.parser.parse_args([
+            'render', 'example_bash_operator',
+            'runme_0', DEFAULT_DATE.isoformat()]))
+
 
 class WebUiTests(unittest.TestCase):
 
