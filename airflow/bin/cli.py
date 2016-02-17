@@ -82,7 +82,7 @@ def backfill(args):
 
 def trigger_dag(args):
 
-    session = settings.Session()
+    session = airflow.Session()
     # TODO: verify dag_id
     execution_date = datetime.now()
     run_id = args.run_id or "manual__{0}".format(execution_date.isoformat())
@@ -116,7 +116,7 @@ def set_is_paused(is_paused, args):
         raise AirflowException('dag_id could not be found')
     dag = dagbag.dags[args.dag_id]
 
-    session = settings.Session()
+    session = airflow.Session()
     dm = session.query(DagModel).filter(
         DagModel.dag_id == dag.dag_id).first()
     dm.is_paused = is_paused
@@ -127,7 +127,7 @@ def set_is_paused(is_paused, args):
 
 
 def run(args):
-
+    utils.set_sqla_nopool()
     utils.pessimistic_connection_handling()
 
     # Setting up logging
@@ -162,7 +162,7 @@ def run(args):
         dag = dagbag.dags[args.dag_id]
         task = dag.get_task(task_id=args.task_id)
     else:
-        session = settings.Session()
+        session = airflow.Session()
         logging.info('Loading pickle id {args.pickle}'.format(**locals()))
         dag_pickle = session.query(
             DagPickle).filter(DagPickle.id == args.pickle).first()
@@ -201,7 +201,7 @@ def run(args):
         if args.ship_dag:
             try:
                 # Running remotely, so pickling the DAG
-                session = settings.Session()
+                session = airflow.Session()
                 pickle = DagPickle(dag)
                 session.add(pickle)
                 session.commit()
@@ -427,13 +427,13 @@ def worker(args):
 
 
 def initdb(args):
-    print("DB: " + repr(settings.engine.url))
+    print("DB: " + repr(airflow.engine.url))
     utils.initdb()
     print("Done.")
 
 
 def resetdb(args):
-    print("DB: " + repr(settings.engine.url))
+    print("DB: " + repr(airflow.engine.url))
     if args.yes or input(
             "This will drop existing tables if they exist. "
             "Proceed? (y/n)").upper() == "Y":
@@ -445,7 +445,7 @@ def resetdb(args):
 
 
 def upgradedb(args):
-    print("DB: " + repr(settings.engine.url))
+    print("DB: " + repr(airflow.engine.url))
     utils.upgradedb()
 
 

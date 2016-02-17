@@ -17,11 +17,11 @@ from airflow.executors import SequentialExecutor, LocalExecutor
 from airflow.models import Variable
 
 configuration.test_mode()
-from airflow import jobs, models, DAG, utils, operators, hooks, macros, settings
+from airflow import (
+    jobs, models, DAG, utils, operators, hooks, macros, settings, Session)
 from airflow.hooks import BaseHook
 from airflow.bin import cli
 from airflow.www import app as application
-from airflow.settings import Session
 from airflow.utils import LoggingMixin, round_time
 from lxml import html
 from airflow.utils import AirflowException
@@ -1243,7 +1243,7 @@ class ConnectionTest(unittest.TestCase):
 class WebHDFSHookTest(unittest.TestCase):
     def setUp(self):
         configuration.test_mode()
-    
+
     def test_simple_init(self):
         from airflow.hooks.webhdfs_hook import WebHDFSHook
         c = WebHDFSHook()
