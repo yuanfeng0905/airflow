@@ -620,11 +620,20 @@ class timeout(object):
         raise AirflowTaskTimeout(self.error_message)
 
     def __enter__(self):
-        signal.signal(signal.SIGALRM, self.handle_timeout)
-        signal.alarm(self.seconds)
+        try:
+            signal.signal(signal.SIGALRM, self.handle_timeout)
+            signal.alarm(self.seconds)
+        except Exception as e:
+            logging.warning(
+                "timeout could not be activated, it doens't work within "
+                "threads. Most likely you are using a LocalExecutor. "
+                "Timeouts aren't compatible with LocalExecutor")
 
     def __exit__(self, type, value, traceback):
-        signal.alarm(0)
+        try:
+            signal.alarm(0)
+        except Exception as e:
+            pass
 
 
 def is_container(obj):
