@@ -137,7 +137,7 @@ s3_log_folder = None
 
 # The executor class that airflow should use. Choices include
 # SequentialExecutor, LocalExecutor, CeleryExecutor
-executor = SequentialExecutor
+executor = LocalExecutor
 
 # The SqlAlchemy connection string to the metadata database.
 # SqlAlchemy supports many different database engine, more information
@@ -386,7 +386,7 @@ class ConfigParserWithDefaults(ConfigParser):
         elif self.has_option(section, key):
             return expand_env_var(ConfigParser.get(self, section, key, **kwargs))
 
-        elif ((section, key) in ConfigParserWithDefaults.as_command_stdout 
+        elif ((section, key) in ConfigParserWithDefaults.as_command_stdout
             and self.has_option(section, fallback_key)):
             command = self.get(section, fallback_key)
             return run_command(command)
